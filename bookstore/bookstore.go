@@ -19,3 +19,7 @@ func Buy(b Book) (Book, error) {
 	b.Copies--
 	return b, nil
 }
+
+func GetAllBooks(b []Book) []Book {
+	return b
+}
