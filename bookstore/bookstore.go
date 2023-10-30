@@ -11,10 +11,12 @@ type Customer struct {
 }
 
 type Book struct {
-	Title  string
-	Author string
-	Copies int
-	ID     int
+	Title           string
+	Author          string
+	Copies          int
+	ID              int
+	PriceCents      int
+	DiscountPercent int
 }
 
 func Buy(b Book) (Book, error) {
@@ -39,4 +41,9 @@ func GetBook(b map[int]Book, id int) (Book, error) {
 		return Book{}, fmt.Errorf("ID %d did not exist", id)
 	}
 	return c, nil
+}
+
+func (b Book) NetPriceCents() int {
+	c := b.PriceCents * b.DiscountPercent / 100
+	return b.PriceCents - c
 }
