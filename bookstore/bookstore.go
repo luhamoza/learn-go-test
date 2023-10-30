@@ -1,11 +1,15 @@
 package bookstore
 
-import "errors"
+import (
+	"errors"
+	"fmt"
+)
 
 type Customer struct {
 	name  string
 	email string
 }
+
 type Book struct {
 	Title  string
 	Author string
@@ -20,14 +24,19 @@ func Buy(b Book) (Book, error) {
 	b.Copies--
 	return b, nil
 }
-func GetAllBooks(b []Book) []Book {
-	return b
-}
-func GetBook(b []Book, id int) Book {
-	for _, c := range b {
-		if c.ID == id {
-			return c
-		}
+
+func GetAllBooks(b map[int]Book) []Book {
+	all := []Book{}
+	for _, v := range b {
+		all = append(all, v)
 	}
-	return Book{}
+	return all
+}
+
+func GetBook(b map[int]Book, id int) (Book, error) {
+	c, ok := b[id]
+	if !ok {
+		return Book{}, fmt.Errorf("ID %d did not exist", id)
+	}
+	return c, nil
 }

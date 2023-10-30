@@ -13,6 +13,7 @@ func TestBook(t *testing.T) {
 		Author: "M Nusir",
 		Copies: 10}
 }
+
 func TestBuy(t *testing.T) {
 	t.Parallel()
 	b := bookstore.Book{
@@ -29,6 +30,7 @@ func TestBuy(t *testing.T) {
 		t.Errorf("Want %d copies from %d stock, got %d", want, b.Copies, got)
 	}
 }
+
 func TestBuyErrorsIfNoCopiesLeft(t *testing.T) {
 	t.Parallel()
 	b := bookstore.Book{
@@ -40,24 +42,40 @@ func TestBuyErrorsIfNoCopiesLeft(t *testing.T) {
 		t.Errorf("Want %v, got nil", err)
 	}
 }
+
 func TestGetAllBooks(t *testing.T) {
 	t.Parallel()
-	catalog := []bookstore.Book{
-		{Title: "For the Love of Go"}, {Title: "The Power of Go"}}
+	catalog := map[int]bookstore.Book{
+		1: {ID: 1, Title: "For the Love of Go"}, 2: {ID: 2, Title: "The Power of Go"}}
 	want := []bookstore.Book{
-		{Title: "For the Love of Go"}, {Title: "The Power of Go"},
+		{ID: 1, Title: "For the Love of Go"}, {ID: 2, Title: "The Power of Go"},
 	}
 	got := bookstore.GetAllBooks(catalog)
 	if !cmp.Equal(want, got) {
 		t.Errorf(cmp.Diff(want, got))
 	}
 }
+
 func TestGetBook(t *testing.T) {
 	t.Parallel()
-	catalog := []bookstore.Book{{Title: "For the Love of Go", ID: 1}, {Title: "The Power of Go", ID: 2}}
+	catalog := map[int]bookstore.Book{
+		1: {Title: "For the Love of Go", ID: 1},
+		2: {Title: "The Power of Go", ID: 2}}
 	want := bookstore.Book{Title: "The Power of Go", ID: 2}
-	got := bookstore.GetBook(catalog, 2)
+	got, err := bookstore.GetBook(catalog, 2)
+	if err != nil {
+		t.Fatal(err)
+	}
 	if !cmp.Equal(want, got) {
 		t.Errorf(cmp.Diff(want, got))
+	}
+}
+
+func TestGetBookBadIDReturnsError(t *testing.T) {
+	t.Parallel()
+	catalog := map[int]bookstore.Book{}
+	_, err := bookstore.GetBook(catalog, 3)
+	if err == nil {
+		t.Error("Want error for non-existent ID, got nil")
 	}
 }
