@@ -1,3 +1,3 @@
 # Happy Fun Books
 
-Learning Go by building online bookstore.
+Learning Go with test by building simple bookstore.
